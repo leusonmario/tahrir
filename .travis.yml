@@ -1,7 +1,25 @@
+
+sudo: required
 language: java
-notifications:
-  email:
-    - ian.clarke@gmail.com
-    - ravitejasvi@gmail.com
-    - torcellite@gmail.com
-    - tahrir-development@googlegroups.com
+
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=IdentityStoreTest#getIdentitiesWithNick -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/tahrir/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "OJon809yHxF/hileA4LRaKWQceu7d3wsBZVXms3RQDqS0NKg0/Hi4IGi6DjPvstuWYhhRo6dIafFBHhMqRi2Gf5qfhCzjYnO2hAqifWqOXJ1tdHKW6sI1HdlxLiYi5ak5QDtnkfhMkhvDmgSRUfkzhZacFQDZ7S7bfrDC7ZCnAJLLNhICdrvHmCSuiTZNBBHbP6rTSs68lMIYsGHIAa7q4J7EHseEol4jvUcrBYj1v8ViG/84bGY+pL7ytAXIJJWomd0RaXwNN/Ukq4sQ6S69+4ZFF09ii/+MLQek++aG6HQEywdOd4IHo3kfr8CqFxM/fIZM98X4Gc7I5vYtzsFx+U9dSHTbt6Nf9JZ2s8XLHXXwfen9sr2TEq5LXCblvqabUYgPo/2Tm36qTBPn/Hfvz+61I+gHUcH/q92LEwQ/sRsHAJ3W5JspudtFikLUVgv5TcvvByy3D4437s1O8TCvEb3eAzS/F/9/Ri1F9rn2GGY7FmQ/Hc+LM3vDeFefytrVX22kkg12a9qbfnCxhcvsU9LUFH9EbLxG0MlN61kc7pPBj4KVptW0ZluwkvrcPakAtGxDqaLlPbYuuRPDt6wm2Mshnb0qLF71Rf7m6N2RhNDjU0SKQ6guZLfWund/Tlc6WcEnU5WVkoH48S4S1SQsM3CYiQaVrKcj1YvCEV41gM="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
